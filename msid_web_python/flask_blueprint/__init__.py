@@ -15,7 +15,7 @@ import msal, uuid, json
 # TODO: redirect(url_for('index')) is too opinionated. user must be able to choose
 # TODO: sign_in_status probably doesn't belong in here but in user's app
 
-auth = Blueprint('auth', __name__, url_prefix="/auth", static_folder='static', template_folder="templates/auth")
+auth = Blueprint('auth', __name__, url_prefix="/auth", static_folder='static', template_folder="templates")
 
 # grab ms_id_web from app's global dictionary - this should have been attached by instantiating MSIDWebPy.
 # TODO: make this dictionary key name configurable on app init
@@ -28,6 +28,13 @@ def get_ms_id_web():
 def sign_in():
     current_app.logger.debug("sign_in: request received at sign in endpoint. will redirect browser to login")
     auth_url = get_ms_id_web().get_auth_url(str(Policy.SIGN_UP_SIGN_IN))
+    return redirect(auth_url)
+
+@auth.route('/edit_profile')
+def edit_profile():
+    current_app.logger.debug("edit_profile: request received at edit profile endpoint. will redirect browser to edit profile")
+    # TODO: for ease of use, this should become get_ms_id_web().b2c_edit_profile()?
+    auth_url = get_ms_id_web().get_auth_url(str(Policy.EDIT_PROFILE))
     return redirect(auth_url)
 
 @auth.route('/redirect')
@@ -47,13 +54,3 @@ def post_sign_out():
     get_ms_id_web().remove_user(g.identity_context_data.username)  # remove user auth from session on successful logout
     return redirect(url_for('index'))                   # take us back to the home page
 
-@auth.route('/sign_in_status')
-def sign_in_status():
-    return render_template('status.html')
-
-@auth.route('/edit_profile')
-def edit_profile():
-    current_app.logger.debug("edit_profile: request received at edit profile endpoint. will redirect browser to edit profile")
-    # TODO: for ease of use, this should become get_ms_id_web().b2c_edit_profile()?
-    auth_url = get_ms_id_web().get_auth_url(str(Policy.EDIT_PROFILE))
-    return redirect(auth_url)
