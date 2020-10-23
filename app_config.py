@@ -1,4 +1,3 @@
-import os
 ### YOUR APP CONFIGS ###
 # write to filesystem:
 SESSION_TYPE = 'filesystem'
