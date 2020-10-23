@@ -23,7 +23,7 @@
         <!-- the MS_ID_WEB key is configurable in the config file -->
         {% set app_cfg = config.get('MS_ID_WEB_CONFIGS') %}
         {% set client_id = app_cfg.client.client_id %}
-        {% if "e5c690fe-05df-4035-8f95-f6820851c584" == client_id %}
+        {% if "e5c690fe-05df-4035-8f95-f6820851c584" != client_id %}
             {% set aad_link="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/" ~ client_id ~ "/isMSAApp/" %}
         {% else %}
             {% set aad_link = "https://portal.azure.com/#blade/Microsoft_AAD_B2CAdmin/TenantManagementMenuBlade/overview" %}

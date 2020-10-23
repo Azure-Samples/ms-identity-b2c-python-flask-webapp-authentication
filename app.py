@@ -18,7 +18,7 @@ Do not run using this configuration in production.
 
 LINUX/OSX - in a terminal window, type the following:
 =======================================================
-    export FLASK_APP=authenticate_users_b2c.py
+    export FLASK_APP=app.py
     export FLASK_ENV=development
     export FLASK_DEBUG=1
     export FLASK_RUN_CERT=adhoc
@@ -26,7 +26,7 @@ LINUX/OSX - in a terminal window, type the following:
 
 WINDOWS - in a command window, type the following:
 ====================================================
-    set FLASK_APP=authenticate_users_b2c.py
+    set FLASK_APP=app.py
     set FLASK_ENV=development
     set FLASK_DEBUG=1
     set FLASK_RUN_CERT=adhoc

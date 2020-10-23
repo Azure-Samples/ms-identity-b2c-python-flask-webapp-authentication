@@ -31,6 +31,6 @@
         "post_sign_out": "/post_sign_out"
     }
 },
-"django": "Django is not yet implemented"
+"django": "Django is not yet implemented in this sample"
 }
     
