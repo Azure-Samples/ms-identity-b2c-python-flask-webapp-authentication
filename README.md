@@ -27,18 +27,18 @@ description: "This sample demonstrates a Python Flask webapp that signs in users
  1. [Contributing](#contributing)
  1. [Code of Conduct](#code-of-conduct)
 
-
 <!-- ![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/<BuildNumber>/badge)-->
-## Overview
-This sample demonstrates a Python Flask webapp that authenticates users with Azure Active Directory B2C (Azure AD B2C) using the the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python).
 
+## Overview
+
+This sample demonstrates a Python Flask webapp that authenticates users with Azure Active Directory B2C (Azure AD B2C) using the the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python).
 
 ## Scenario
 
-1. A `confidential client` web application uses **MSAL for Python** to sign-in a user and obtains an [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) from **Azure AD B2C**:
+1. The Web application uses **MSAL for Python** to sign-in a user and obtains an [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) from **Azure AD B2C**.
 2. The **ID Token** proves that the user has successfully authenticated against a **Azure AD B2C** tenant.
 3. The web application protects one of its routes according to user's authentication status.
-4. The user can sign up for a new account, reset password, or edit user profile information.
+4. The user can sign up for a new account, reset password, or edit user profile information using B2C.
 
 ![Overview](./ReadmeFiles/sign-in.png)
 
@@ -72,18 +72,21 @@ or download and extract the repository .zip file.
 
 ### Step 2: Install project dependencies
 
-1. navigate to the project folder
-2. activate a Python 3 virtual environment
-3. install project dependencies
+1. Navigate to the project folder
+2. Activate a Python 3 virtual environment
+3. Install project dependencies
 
 - In Linux/OSX via the terminal:
+
 ```Shell
   cd project-root-directory
   python3 -m venv venv # only required to create the venv if you don't have a venv already
   source venv/bin/activate # activates the venv
   pip install -r requirements.txt
 ```
+
 - In Windows via PowerShell:
+
 ```PowerShell
   cd project-root-directory
   python3 -m venv venv # only required to create the venv if you don't have a venv already
@@ -107,16 +110,15 @@ As a first step you'll need to:
 
 ### Create User Flows and Custom Policies
 
-Please refer to [Tutorial: Create user flows in Azure Active Directory B2C](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-create-user-flows) to create common user flows like sign up, sign in, edit profile, and passowrd reset.
+Please refer to [Tutorial: Create user flows in Azure Active Directory B2C](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-create-user-flows) to create common user flows like sign up, sign in, edit profile, and password reset.
 
-You may consider creating [Custom policies in Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/custom-policy-overview) as well, however, this is beyond the scope of this tutorial.
+You may consider creating [Custom policies in Azure Active Directory B2C](https://docs.microsoft.com//azure/active-directory-b2c/custom-policy-overview) as well, however, this is beyond the scope of this tutorial.
 
 ### Add External Identity Providers
 
 Please refer to: [Tutorial: Add identity providers to your applications in Azure Active Directory B2C](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-add-identity-providers)
 
 ### Register the webapp (ms-identity-b2c-python-flask-webapp-authentication)
-
 
 1. Navigate to the [Azure portal](https://portal.azure.com) and select the **Azure AD B2C** service.
 1. Select the **App Registrations** blade on the left, then select **New registration**.
@@ -134,8 +136,6 @@ Please refer to: [Tutorial: Add identity providers to your applications in Azure
    - Select one of the available key durations (**In 1 year**, **In 2 years**, or **Never Expires**) as per your security concerns.
    - The generated key value will be displayed when you click the **Add** button. Copy the generated value for use in the steps later.
    - You'll need this key later in your code's configuration files. This key value will not be displayed again, and is not retrievable by any other means, so make sure to note it from the Azure portal before navigating to any other screen or blade.
-
-
 
 #### Configure the webapp (ms-identity-b2c-python-flask-webapp-authentication) to use your app registration
 
@@ -159,6 +159,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 - To run the sample, open a terminal window. Navigate to the root of the project. Be sure your virtual environment with dependencies is activated ([Prerequisites](#prerequisites)). 
 - In Linux/OSX via the terminal:
+
   ```Shell
     export FLASK_APP=app.py
     export FLASK_ENV=development
@@ -166,7 +167,9 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
     export FLASK_RUN_CERT=adhoc
     flask run
   ```
+
 - In Windows via PowerShell:
+
   ```PowerShell
     set FLASK_APP=app.py
     set FLASK_ENV=development
@@ -174,6 +177,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
     set FLASK_RUN_CERT=adhoc
     flask run
   ```
+
 - Alternatively, you may use `python -m flask run` instead of `flask run`
 - Navigate to [https://127.0.0.1:5000](https://127.0.0.1:5000) in your browser
 
@@ -192,7 +196,6 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
-
 ## About the code
 
 This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign up and/or sign in users with an Azure AD B2C tenant. It levarages the IdentityWebPython class found in the [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common) repository to allow for quick app setup.
@@ -200,6 +203,7 @@ This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](http
 1. A configuration object is parsed from [aad.b2c.config.json](./aad.b2c.config.json)
 1. A FlaskContextAdapter is instantiated for interfacing with the Flask app
 1. The FlaskContextAdapter and an Azure AD configuration object are used to instantiate IdentityWebPython
+
     ```python
     aad_configuration = AADConfig.parse_json('aad.b2c.config.json')
     adapter = FlaskContextAdapter(app)
@@ -222,9 +226,10 @@ This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](http
 In this sample, much of the required MSAL for Python configurations are automatically setup using utilties found in [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common). For a more direct, hands-on demonstration of the sign-in process without this abstraction, please see the code within this [Python Webapp](https://github.com/azure-samples/ms-identity-python-webapp) sample.
 
 At a minimum, following parameters need to be provided to MSAL for Python:
+
   - The **Client ID** of the app
   - The **Client Credential**, which is a requirement for Confidential Client Applications
-  - The **Azure AD B2C Authority** concatenated with an appropriate **UserFlowPolicy** for *sign-up-sign-in* or *profile-edit* or *password-reset*.
+  - The **Azure AD B2C Authority** concatenated with an appropriate **UserFlowPolicy** for sign-up-sign-in* or *profile-edit* or *password-reset*.
 
 1. The first step of the sign-in process is to send a request to the `/authorize` endpoint on Azure Active Directory B2C.
 
@@ -237,8 +242,9 @@ At a minimum, following parameters need to be provided to MSAL for Python:
       authority=f'{AUTHORITY}/{B2C_SIGN_UP_SIGN_IN_USER_FLOW_POLICY}',
     )
     ```
+
 1. The `client_instance` instance is leveraged to construct a `/authorize` request URL with the appropriate parameters, and the browser is redirected to this URL.
-1. The user is presented with a sign-in prompt by Azure Active Directory B2C. If the sign-in attempt is successful, the user's browser is redirected back to this app's `/redirect` endpoint. A successful request to this endpoint will contain an [**authorization code**](https://docs.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow).
+1. The user is presented with a sign-in prompt by Azure Active Directory B2C. If the sign-in attempt is successful, the user's browser is redirected back to this app's `/redirect` endpoint. A successful request to this endpoint will contain an [**authorization code**](https://docs.microsoft.com/azure/active-directory-b2c/authorization-code-flow).
 1. The `client_instance` is used to exchange this authorization code for an ID Token and Access Token from Azure Active Directory.
 
     ```python
@@ -247,7 +253,6 @@ At a minimum, following parameters need to be provided to MSAL for Python:
     ```
 
 1. If the request is successful, MSAL for Python validates the signature and nonce of the incoming token. If these checks succeed, it returns the resulting `id_token`, `access_token` and plaintext `id_token_claims` in a dictionary. *It is the application's responsibility to store these tokens securely.*
-
 
 ## More information
 
