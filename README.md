@@ -124,8 +124,8 @@ Please refer to: [Tutorial: Add identity providers to your applications in Azure
 1. Select the **App Registrations** blade on the left, then select **New registration**.
 1. In the **Register an application page** that appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `ms-identity-b2c-python-flask-webapp-authentication`.
-   - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
-   - In the **Redirect URI (optional)** section, select **Web** in the combo-box and enter the following redirect URI: `http://localhost:8080/ms-identity-b2c-python-flask-webapp-authentication/auth_redirect`.
+   - Under **Supported account types**, select **Accounts in any identity provider or organizational directory (for authenticating users with user flows)**.
+   - In the **Redirect URI (optional)** section, select **Web** in the combo-box and enter the following redirect URI: `http://127.0.01:5000/auth/redirect`.
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. Select **Save** to save your changes.
@@ -143,15 +143,13 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-1. Open the [aad_config.py](aad_config.py) file.
-1. Find the key `client['client_id']: str =` and replace the existing value with the application ID (clientId) of the `ms-identity-b2c-python-flask-webapp-authentication` application from the Azure portal.
-1. Find the key `client['client_credential']: str =` and replace the existing value with the key you saved during the creation of the `ms-identity-b2c-python-flask-webapp-authentication` application from the Azure portal.
-1. Find the key `client['authority']: str =` and replace the first instance of `fabrikamb2c` with the name of the AAD B2C tenant in which you created the `ms-identity-b2c-python-flask-webapp-authentication` application in the Azure portal.
-1. Find the key `client['authority']: str =` and replace the second instance of `fabrikamb2c` with the name of the AAD B2C tenant in which you created the `ms-identity-b2c-python-flask-webapp-authentication` application in the Azure portal.
-<!-- 1. Find the app key `auth_request['scopes']: list =` and place into the array the clientId value you placed into `auth_request['scopes']` in step 1 of this section. -->
-1. Find the key `b2c_policy[str(Policy.SUSI_KEY)]: str =` and replace the value with the name of the sign-up/sign-in userflow policy you created in the AAD B2C tenant in which you created the `ms-identity-b2c-python-flask-webapp-authentication` application in the Azure portal.
-1. Find the key `b2c_policy[str(Policy.PASSWORD_KEY)]: str =` and replace the value with the name of the password reset userflow policy you created in the AAD B2C tenant in which you created the `ms-identity-b2c-python-flask-webapp-authentication` application in the Azure portal.
-1. Find the key `2c_policy[str(Policy.PROFILE_KEY)]: str =` and replace the value with the name of the edit profile userflow policy you created in the AAD B2C tenant in which you created the `ms-identity-b2c-python-flask-webapp-authentication` application in the Azure portal.
+1. Open the `aad.config.json` file
+1. Find the string `default-value-enter-your-tenant-id-here` and replace the existing value with your Azure AD tenant ID.
+1. Find the string `default-value-enter-your-client-id-here` and replace the existing value with the application ID (clientId) of the `python-flask-webapp-auth-my-tenant` application copied from the Azure portal.
+1. Find the string `default-value-enter-your-client-secret-here` and replace the existing value with the key you saved during the creation of the `python-flask-webapp-auth-my-tenant` app, in the Azure portal.
+1. Find the key `b2c.susi` and set the value to the name of your sign-up/sign-in userflow policy you created in your AAD B2C tenant.
+1. Find the key `b2c.profile` and set the value to the name of your sign-up/sign-in userflow policy you created in your AAD B2C tenant.
+1. Find the key `b2c.password` and set the value to the name of your sign-up/sign-in userflow policy you created in your AAD B2C tenant.
 
 </details>
 
@@ -171,10 +169,10 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 - In Windows via PowerShell:
 
   ```PowerShell
-    set FLASK_APP=app.py
-    set FLASK_ENV=development
-    set FLASK_DEBUG=1
-    set FLASK_RUN_CERT=adhoc
+    $env:FLASK_APP="app.py"
+    $env:FLASK_ENV="development"
+    $env:FLASK_DEBUG="1"
+    $env:FLASK_RUN_CERT="adhoc"
     flask run
   ```
 
