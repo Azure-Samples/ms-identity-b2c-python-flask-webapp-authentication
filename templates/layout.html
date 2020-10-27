@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -28,6 +28,11 @@
     {% block flash_messages %}
     {% endblock %}
     <footer style="text-align: center;">
+        <div id="right">
+            Note:If you are using your own Azure AD B2C tenant's app registration instead of the one bundled with B2C, after registering your new app in your own B2C tenant, do remember to configure your app's <em>redirect URI</em> on <a href={{ aad_link }}>Azure Portal</a> if you use your own AAD B2C tenant or deploy on the web.
+            <br>
+            <strong>redirect_uri</strong>: {{ ms_id_url_for('aad_redirect', _external=True) }}
+        </div>
         {% block footer%}{% endblock %}
     </footer>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
