@@ -47,7 +47,7 @@ This sample demonstrates a Python Flask webapp that authenticates users with Azu
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-|`authenticate_users_b2c.py` | The sample app code.              |
+|`app.py` | The sample app code.              |
 |`msid_web_python`  | The auth-related utility code.             |
 |`CHANGELOG.md`     | List of changes to the sample.             |
 |`CONTRIBUTING.md`  | Guidelines for contributing to the sample. |
@@ -161,7 +161,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 - To run the sample, open a terminal window. Navigate to the root of the project. Be sure your virtual environment with dependencies is activated ([Prerequisites](#prerequisites)). 
 - In Linux/OSX via the terminal:
   ```Shell
-    export FLASK_APP=authenticate_users_in_my_tenant.py
+    export FLASK_APP=app.py
     export FLASK_ENV=development
     export FLASK_DEBUG=1
     export FLASK_RUN_CERT=adhoc
@@ -169,7 +169,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
   ```
 - In Windows via PowerShell:
   ```PowerShell
-    set FLASK_APP=authenticate_users_in_my_tenant.py
+    set FLASK_APP=app.py
     set FLASK_ENV=development
     set FLASK_DEBUG=1
     set FLASK_RUN_CERT=adhoc
@@ -193,21 +193,62 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
+
 ## About the code
 
-This sample shows how to use [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign in users from your Azure AD B2C tenant. 
+This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign up and/or sign in users with an Azure AD B2C tenant. It levarages the IdentityWebPython class found in the [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common) repository to allow for quick app setup.
 
-The following parameters need to be provided upon instantiation via config dictionaries:
+1. A configuration object is parsed from [aad.b2c.config.json](./aad.b2c.config.json)
+1. A FlaskContextAdapter is instantiated for interfacing with the Flask app
+1. The FlaskContextAdapter and an Azure AD configuration object are used to instantiate IdentityWebPython
+    ```python
+    aad_configuration = AADConfig.parse_json('aad.b2c.config.json')
+    adapter = FlaskContextAdapter(app)
+    ms_identity_web = IdentityWebPython(aad_configuration, adapter)
+    ```
 
-- The **Client ID** of the app
-- The **Client Secret**, which is a requirement for Confidential Client Applications
-- The **Azure AD B2C Authority** concatenated with the appropriate **UserFlowPolicy** for sign-up/sign-in or profile-edit or password-reset.
+- These three lines of code automatically hook up all necessary endpoints for the authentication process into your Flask app under a route prefix (`/auth` by default). For example, the redirect endpoint is found at `/auth/redirect`.
+- When a user navigates to `/auth/sign_in` and completes a sign-in attempt, the resulting identity data is put into the session, which can be accessed through the flask global g object at `g.identity_context_data`.
+- When an endpoint is decorated with `@ms_identity_web.login_required`, the application only allows requests to the endpoint from authenticated (signed-in) users. If the user is not signed-in, a `401: unathorized` error is thrown, and the browser is redirected to the 401 handler.
 
-1. The first step of the sign-in process is to send a request to the /authorize endpoint on Azure Active Directory B2C. Our MSAL(Python) ConfidentialClientApplication instance is leveraged to construct an authorization request URL, and our app redirects the browser to this URL.
-1. The user is presented with a sign-in prompt by Azure Active Directory B2C. If the sign-in attempt is successful, the user's browser is redirected to our app's redirect endpoint. A valid request to this endpoint will contain an [**authorization code**](https://docs.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow).
-1. Our ConfidentialClientApplication instance then exchanges this authorization code for an ID Token and Access Token from Azure Active Directory B2C.
-1. If acquireToken is successful, MSAL for Python validates the signature and nonce of the incoming token. If these checks succeed, it returns the resulting tokens and ID token claims as a dictionary.
-1. It is the application's responsibility to store these tokens securely.
+    ```python
+    @app.route('/a_protected_route')
+    @ms_identity_web.login_required
+    def a_protected_route():
+      return "if you can see this, you're signed in!"
+    ```
+
+### Under the hood
+
+In this sample, much of the required MSAL for Python configurations are automatically setup using utilties found in [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common). For a more direct, hands-on demonstration of the sign-in process without this abstraction, please see the code within this [Python Webapp](https://github.com/azure-samples/ms-identity-python-webapp) sample.
+
+At a minimum, following parameters need to be provided to MSAL for Python:
+  - The **Client ID** of the app
+  - The **Client Credential**, which is a requirement for Confidential Client Applications
+  - The **Azure AD B2C Authority** concatenated with an appropriate **UserFlowPolicy** for *sign-up-sign-in* or *profile-edit* or *password-reset*.
+
+1. The first step of the sign-in process is to send a request to the `/authorize` endpoint on Azure Active Directory B2C.
+
+1. An MSAL for Python **ConfidentialClientApplication** instance is created:
+
+    ```python
+    client_instance = msal.ConfidentialClientApplication(
+      client_id=CLIENT_ID,
+      client_credential=CLIENT_CREDENTIAL,
+      authority=f'{AUTHORITY}/{B2C_SIGN_UP_SIGN_IN_USER_FLOW_POLICY}',
+    )
+    ```
+1. The `client_instance` instance is leveraged to construct a `/authorize` request URL with the appropriate parameters, and the browser is redirected to this URL.
+1. The user is presented with a sign-in prompt by Azure Active Directory B2C. If the sign-in attempt is successful, the user's browser is redirected back to this app's `/redirect` endpoint. A successful request to this endpoint will contain an [**authorization code**](https://docs.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow).
+1. The `client_instance` is used to exchange this authorization code for an ID Token and Access Token from Azure Active Directory.
+
+    ```python
+    token_acquisition_result = client_instance.acquire_token_by_authorization_code(authorization_code, SCOPES)
+    # this sends the authorization code to Azure AD's `/token` endpoint to request a token.
+    ```
+
+1. If the request is successful, MSAL for Python validates the signature and nonce of the incoming token. If these checks succeed, it returns the resulting `id_token`, `access_token` and plaintext `id_token_claims` in a dictionary. *It is the application's responsibility to store these tokens securely.*
+
 
 ## More information
 
