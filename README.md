@@ -5,7 +5,7 @@ languages:
 products:
   - azure-active-directory  
   - azure-active-directory-b2c
-  - azure-active-directory-domain
+  - microsoft-identity-platform
 name: Python flask webapp utilizing MSAL for Python to authenticate users with Azure Active Directory B2C (Azure AD B2C)
 urlFragment: ms-identity-b2c-python-flask-webapp-authentication
 description: "This sample demonstrates a Python Flask webapp that signs in users with Azure AD B2C"
