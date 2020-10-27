@@ -28,18 +28,17 @@ description: "This sample demonstrates a Python Flask webapp that signs in users
  1. [Code of Conduct](#code-of-conduct)
 
 
-<!-- ![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/<BuildNumber>/badge)
-// TODO: COMMENT OUT BUILD BADGE UNTIL WE FIND A PURPOSE FOR IT-->
+<!-- ![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/<BuildNumber>/badge)-->
 ## Overview
 This sample demonstrates a Python Flask webapp that authenticates users with Azure Active Directory B2C (Azure AD B2C) using the the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python).
 
 
-
 ## Scenario
 
-1. The client web application uses **MSAL for Python** to sign-in users and obtains an [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) from **Azure AD B2C**:
+1. A `confidential client` web application uses **MSAL for Python** to sign-in a user and obtains an [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) from **Azure AD B2C**:
 2. The **ID Token** proves that the user has successfully authenticated against a **Azure AD B2C** tenant.
 3. The web application protects one of its routes according to user's authentication status.
+4. The user can sign up for a new account, reset password, or edit user profile information.
 
 ![Overview](./ReadmeFiles/sign-in.png)
 
@@ -55,7 +54,7 @@ This sample demonstrates a Python Flask webapp that authenticates users with Azu
 
 ## Prerequisites
 
-- [Python 3](https://www.python.org/downloads/)
+- [Python 3.8](https://www.python.org/downloads/)
 - A virtual environment to install packages from [requirements.txt](requirements.txt)
 - An **Azure AD B2C** tenant. For more information see: [How to get an Azure AD B2C tenant](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-create-tenant) (optional)
 
