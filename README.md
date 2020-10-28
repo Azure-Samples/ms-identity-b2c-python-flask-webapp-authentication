@@ -196,7 +196,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 ## About the code
 
-This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign up and/or sign in users with an Azure AD B2C tenant. It levarages the IdentityWebPython class found in the [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common) repository to allow for quick app setup.
+This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign up and/or sign in users with an Azure AD B2C tenant. It leverages the IdentityWebPython class found in the [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common) repository to allow for quick app setup.
 
 1. A configuration object is parsed from [aad.b2c.config.json](./aad.b2c.config.json)
 1. A FlaskContextAdapter is instantiated for interfacing with the Flask app
@@ -221,13 +221,13 @@ This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](http
 
 ### Under the hood
 
-In this sample, much of the required MSAL for Python configurations are automatically setup using utilties found in [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common). For a more direct, hands-on demonstration of the sign-in process without this abstraction, please see the code within this [Python Webapp](https://github.com/azure-samples/ms-identity-python-webapp) sample.
+In this sample, much of the required MSAL for Python configurations are automatically setup using utilities found in [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-common). For a more direct, hands-on demonstration of the sign-in process without this abstraction, please see the code within this [Python Webapp](https://github.com/azure-samples/ms-identity-python-webapp) sample.
 
 At a minimum, following parameters need to be provided to MSAL for Python:
 
-  - The **Client ID** of the app
-  - The **Client Credential**, which is a requirement for Confidential Client Applications
-  - The **Azure AD B2C Authority** concatenated with an appropriate **UserFlowPolicy** for sign-up-sign-in* or *profile-edit* or *password-reset*.
+- The **Client ID** of the app
+- The **Client Credential**, which is a requirement for Confidential Client Applications
+- The **Azure AD B2C Authority** concatenated with an appropriate **UserFlowPolicy** for sign-up-sign-in* or *profile-edit* or *password-reset*.
 
 1. The first step of the sign-in process is to send a request to the `/authorize` endpoint on Azure Active Directory B2C.
 
