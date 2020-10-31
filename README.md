@@ -37,7 +37,7 @@ This sample demonstrates a Python Flask webapp that authenticates users with Azu
 ## Scenario
 
 1. The Web application uses **MSAL for Python** to sign-in a user and obtains an [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) from **Azure AD B2C**.
-2. The **ID Token** proves that the user has successfully authenticated against a **Azure AD B2C** tenant.
+2. The **ID Token** proves that the user has successfully authenticated against an **Azure AD B2C** tenant.
 3. The web application protects one of its routes according to user's authentication status.
 4. The user can sign up for a new account, reset password, or edit user profile information using B2C [user-flows](https://docs.microsoft.com/azure/active-directory-b2c/user-flow-overview)
 
@@ -47,7 +47,7 @@ This sample demonstrates a Python Flask webapp that authenticates users with Azu
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-|`app.py` | The sample app code.              |
+|`app.py`           | The sample app code.                       |
 |`msid_web_python`  | The auth-related utility code.             |
 |`CHANGELOG.md`     | List of changes to the sample.             |
 |`CONTRIBUTING.md`  | Guidelines for contributing to the sample. |
@@ -80,7 +80,7 @@ or download and extract the repository .zip file.
 - In Linux/OSX via the terminal:
 
 ```Shell
-  cd project-root-directory # the folder into which you cloned this project
+  cd <project-root-directory> # the folder into which you cloned this project
   python3 -m venv venv # only required to create the venv if you don't have a venv already
   source venv/bin/activate # activates the venv
   pip install -r requirements.txt
@@ -89,7 +89,7 @@ or download and extract the repository .zip file.
 - In Windows via PowerShell:
 
 ```PowerShell
-  cd project-root-directory # the folder into which you cloned this project
+  cd <project-root-directory> # the folder into which you cloned this project
   python3 -m venv venv # only required to create the venv if you don't have a venv already
   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
   . .\venv\Scripts\Activate.ps1 # activates the venv
@@ -99,6 +99,7 @@ or download and extract the repository .zip file.
 ### Register the sample application with your Azure AD B2C tenant
 
 :warning: This sample comes with a pre-registered application for testing purposes. If you would like to use your own **Azure AD B2C** tenant and application, follow the steps below to register and configure the application in the **Azure Portal**. Otherwise, continue with the steps for [Running the sample](#running-the-sample).
+
 <details>
   <summary>Expand this section to see manual steps for configuring your own tenant:</summary>
 
@@ -156,7 +157,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 ## Running the sample
 
-- To run the sample, open a terminal window. Navigate to the root of the project. Be sure your virtual environment with dependencies is activated ([Prerequisites](#prerequisites)). 
+- To run the sample, open a terminal window. Navigate to the root of the project. Be sure your virtual environment with dependencies is activated ([Prerequisites](#prerequisites)).
 - On Linux/OSX via the terminal:
 
   ```Shell
@@ -180,6 +181,8 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 - Alternatively, you may use `python -m flask run` instead of `flask run`
 - Navigate to [https://127.0.0.1:5000](https://127.0.0.1:5000) in your browser
 
+> You might run into an invalid certificate error on your browser as we are using `https`. If you do, you can ignore that error for running this sample's code.
+
 ![Experience](./ReadmeFiles/app.png)
 
 ## Explore the sample
@@ -195,14 +198,19 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
+## We'd love your feedback!
+
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUMVkySTkzMDRTUlYyOVhQQ0taWFg3OVROMSQlQCN0PWcu).
+
 ## About the code
 
-This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign up and/or sign in users with an Azure AD B2C tenant. It levarages the IdentityWebPython class found in the [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-samples-common) repository to allow for quick app setup.
+This sample uses the [Microsoft Authentication Library \(MSAL\) for Python](https://github.com/AzureAD/microsoft-authentication-library-for-python) to sign up and/or sign in users with an Azure AD B2C tenant. It leverages the IdentityWebPython class found in the [Microsoft Identity Python Samples Common](https://github.com/azure-samples/ms-identity-python-samples-common) repository to allow for quick app setup.
 
 In `app.py`'s `def create_app` method:
+
 1. A configuration object is parsed from [aad.b2c.config.json](./aad.config.json)
 1. A FlaskAdapter is instantiated for interfacing with the Flask app
-1. The FlaskAdapter and an Azure AD configuration object are used to instantiate IdentityWebPython
+1. The FlaskAdapter and an Azure AD configuration object are used to instantiate **IdentityWebPython**.
 
     ```python
     aad_configuration = AADConfig.parse_json('aad.b2c.config.json')
@@ -212,7 +220,7 @@ In `app.py`'s `def create_app` method:
 
 - These three lines of code automatically hook up all necessary endpoints for the authentication process into your Flask app under a route prefix (`/auth` by default). For example, the redirect endpoint is found at `/auth/redirect`.
 - When a user navigates to `/auth/sign_in` and completes a sign-in attempt, the resulting identity data is put into the session, which can be accessed through the flask global **g** object at `g.identity_context_data`.
-- When an endpoint is decorated with `@ms_identity_web.login_required`, the application only allows requests to the endpoint from authenticated (signed-in) users. If the user is not signed-in, a `401: unathorized` error is thrown, and the browser is redirected to the 401 handler.
+- When an endpoint is decorated with `@ms_identity_web.login_required`, the application only allows requests to the endpoint from authenticated (signed-in) users. If the user is not signed-in, a `401: unauthorized` error is thrown, and the browser is redirected to the 401 handler.
 
     ```python
     @app.route('/a_protected_route')
@@ -257,10 +265,6 @@ At a minimum, following parameters need to be provided to the MSAL for Python li
 ## Deploy to Azure
 
 Follow [this guide](https://github.com/Azure-Samples/ms-identity-python-flask-deployment) to deploy this app to **Azure App Service**.
-
-## We'd love your feedback!
-
-Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUMVkySTkzMDRTUlYyOVhQQ0taWFg3OVROMSQlQCN0PWcu).
 
 ## More information
 
