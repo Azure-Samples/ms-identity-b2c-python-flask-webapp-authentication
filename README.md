@@ -6,27 +6,35 @@ products:
   - azure-active-directory  
   - azure-active-directory-b2c
   - microsoft-identity-platform
-name: Python flask webapp utilizing MSAL for Python to authenticate users with Azure Active Directory B2C (Azure AD B2C)
+name: Enable your Python Flask webapp to sign in users to your Azure Active Directory B2C tenant with the Microsoft identity platform
 urlFragment: ms-identity-b2c-python-flask-webapp-authentication
-description: "This sample demonstrates a Python Flask webapp that signs in users with Azure AD B2C"
+description: "This sample demonstrates a Python Flask webapp that signs in users with Azure Active Directory B2C (Azure AD B2C)"
 ---
-# Python Flask webapp using MSAL for Python to authenticate users with Azure Active Directory B2C
+# Enable your Python Flask webapp to sign in users to your Azure Active Directory B2C tenant with the Microsoft identity platform
 
- 1. [Overview](#overview)
- 1. [Scenario](#scenario)
- 1. [Contents](#contents)
- 1. [Prerequisites](#prerequisites)
- 1. [Setup](#setup)
- 1. [Registration](#register-the-sample-application-with-your-azure-ad-b2c-tenant)
- 1. [Running the sample](#running-the-sample)
- 1. [Explore the sample](#explore-the-sample)
- 1. [About the code](#about-the-code)
- 1. [Deployment](#deployment)
- 1. [We'd love your feedback!](#wed-love-your-feedback)
- 1. [More information](#more-information)
- 1. [Community Help and Support](#community-help-and-support)
- 1. [Contributing](#contributing)
- 1. [Code of Conduct](#code-of-conduct)
+- [Enable your Python Flask webapp to sign in users to your Azure Active Directory B2C tenant with the Microsoft identity platform](#enable-your-python-flask-webapp-to-sign-in-users-to-your-azure-active-directory-b2c-tenant-with-the-microsoft-identity-platform)
+  - [Overview](#overview)
+  - [Scenario](#scenario)
+  - [Contents](#contents)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+    - [Step 1: Clone or download this repository](#step-1-clone-or-download-this-repository)
+    - [Step 2: Install project dependencies](#step-2-install-project-dependencies)
+    - [Register the sample application with your Azure AD B2C tenant](#register-the-sample-application-with-your-azure-ad-b2c-tenant)
+    - [Choose the Azure AD B2C tenant where you want to create your applications](#choose-the-azure-ad-b2c-tenant-where-you-want-to-create-your-applications)
+    - [Create User Flows and Custom Policies](#create-user-flows-and-custom-policies)
+    - [Add External Identity Providers](#add-external-identity-providers)
+    - [Register the webapp (b2c-python-flask-webapp-auth)](#register-the-webapp-b2c-python-flask-webapp-auth)
+  - [Running the sample](#running-the-sample)
+  - [Explore the sample](#explore-the-sample)
+  - [We'd love your feedback!](#wed-love-your-feedback)
+  - [About the code](#about-the-code)
+    - [Under the hood](#under-the-hood)
+  - [Deploy to Azure](#deploy-to-azure)
+  - [More information](#more-information)
+  - [Community Help and Support](#community-help-and-support)
+  - [Contributing](#contributing)
+  - [Code of Conduct](#code-of-conduct)
 
 <!-- ![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/<BuildNumber>/badge)-->
 
@@ -37,18 +45,17 @@ This sample demonstrates a Python Flask webapp that authenticates users with Azu
 ## Scenario
 
 1. The Web application uses **MSAL for Python** to sign-in a user and obtains an [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) from **Azure AD B2C**.
-2. The **ID Token** proves that the user has successfully authenticated against an **Azure AD B2C** tenant.
-3. The web application protects one of its routes according to user's authentication status.
-4. The user can sign up for a new account, reset password, or edit user profile information using B2C [user-flows](https://docs.microsoft.com/azure/active-directory-b2c/user-flow-overview)
+1. The **ID Token** proves that the user has successfully authenticated against an **Azure AD B2C** tenant.
+1. The web application protects one of its routes according to user's authentication status.
+1. The user can sign up for a new account, reset password, or edit user profile information using B2C [user-flows](https://docs.microsoft.com/azure/active-directory-b2c/user-flow-overview)
 
-![Overview](./ReadmeFiles/sign-in.png)
+![Overview](./ReadmeFiles/topology.png)
 
 ## Contents
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
 |`app.py`           | The sample app code.                       |
-|`msid_web_python`  | The auth-related utility code.             |
 |`CHANGELOG.md`     | List of changes to the sample.             |
 |`CONTRIBUTING.md`  | Guidelines for contributing to the sample. |
 |`LICENSE`          | The license for the sample.                |
@@ -145,9 +152,9 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-1. Open the `aad.config.json` file
+1. Open the `aad.b2c.config.json` file
 1. Find the key `client.client_id` and replace the existing value with the application ID (clientId) of the `b2c-python-flask-webapp-auth` application copied from the Azure portal.
-1. Find the key `client.client_credential` and replace the existing value with the key you saved during the creation of the `b2c-python-flask-webapp-auth` app, in the Azure portal.
+1. Find the key `client.client_credential` and replace the existing value with the client secret you saved during the creation of the `b2c-python-flask-webapp-auth` app, in the Azure portal.
 1. Find the key `client.authority` and replace the the two instances of `fabrikamb2c` with the name of the Azure AD B2C tenant in which you registered the app.
 1. Find the key `b2c.susi` and set the value to the name of your sign-up/sign-in userflow policy you created in your AAD B2C tenant.
 1. Find the key `b2c.profile` and set the value to the name of your sign-up/sign-in userflow policy you created in your AAD B2C tenant.
@@ -181,7 +188,7 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 - Alternatively, you may use `python -m flask run` instead of `flask run`
 - Navigate to [https://127.0.0.1:5000](https://127.0.0.1:5000) in your browser
 
-> You might run into an invalid certificate error on your browser as we are using `https`. If you do, you can ignore that error for running this sample's code.
+> You might run into an invalid certificate error on your browser as we are using self-signed certificates for `https`. If you do, you can ignore that error while running this sample locally.
 
 ![Experience](./ReadmeFiles/app.png)
 
@@ -191,10 +198,10 @@ Open the project in your IDE (like **Visual Studio Code**) to configure the code
 - Click the context-sensitive button at the top right (it will read `Sign In` on first run)
 - Follow the instructions on the next page to sign in with an account of your chosen identity provider.
 - Note the context-sensitive button now says `Sign out` and displays your username to its left.
-- The middle of the screen now has an option to click for ID Token Details: click it to see some of the ID token's decoded claims.
+- The middle of the screen now has an option to click for **ID Token Details**: click it to see some of the ID token's decoded claims.
 - You also have the option of editing your profile. Click the link to edit details like your display name, place of residence, and profession.
 - You can also use the button on the top right to sign out.
-- After signing out, click this link to the [token details page](https://127.0.0.1:5000/auth/token_details) to observe how the app displays a `401: unauthorized` error instead of the ID token claims.
+- After signing out, click the link to `ID Token Details` to observe how the app displays a `401: unauthorized` error instead of the ID token claims.
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
