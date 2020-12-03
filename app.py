@@ -39,7 +39,7 @@ def create_app(secure_client_credential=None):
     app = Flask(__name__, root_path=Path(__file__).parent) #initialize Flask app
     app.config.from_object(app_config) # load Flask configuration file (e.g., session configs)
     Session(app) # init the serverside session for the app: this is requireddue to large cookie size
-    # tell flask to render the 401 template on not-authenticated error. it is not stricly required:
+    # tell flask to render the 401 template on not-authenticated error. it is not strictly required:
     app.register_error_handler(NotAuthenticatedError, lambda err: (render_template('auth/401.html'), err.code))
     aad_configuration = AADConfig.parse_json('aad.b2c.config.json') # parse the aad configs
     app.logger.level=logging.INFO # can set to DEBUG for verbose logs
